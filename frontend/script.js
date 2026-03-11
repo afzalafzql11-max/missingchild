@@ -8,25 +8,17 @@ async function signup(){
 let email=document.getElementById("signup_email").value
 let password=document.getElementById("signup_pass").value
 
-let res=await fetch(API+"/signup",{
+await fetch(API+"/signup",{
 
 method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-email:email,
-password:password
-})
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email,password})
 
 })
 
-alert("Signup successful")
+alert("Account created")
 
 }
-
 
 
 async function login(){
@@ -37,15 +29,8 @@ let password=document.getElementById("login_pass").value
 let res=await fetch(API+"/login",{
 
 method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-email:email,
-password:password
-})
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email,password})
 
 })
 
@@ -67,6 +52,24 @@ alert("Invalid Login")
 }
 
 
+function previewImage(){
+
+let file=document.getElementById("image").files[0]
+
+let reader=new FileReader()
+
+reader.onload=function(){
+
+let img=document.getElementById("preview")
+img.src=reader.result
+img.style.display="block"
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
 
 async function upload(){
 
@@ -80,14 +83,13 @@ form.append("image",file)
 let res=await fetch(API+"/dehaze",{
 
 method:"POST",
-
 body:form
 
 })
 
 let blob=await res.blob()
 
-let url=window.URL.createObjectURL(blob)
+let url=URL.createObjectURL(blob)
 
 let a=document.createElement("a")
 
@@ -99,21 +101,28 @@ a.click()
 }
 
 
-
 async function loadHistory(){
 
 let res=await fetch(API+"/history/"+user_id)
 
 let data=await res.json()
 
-let html="<h3>Your Images</h3>"
+let html="<h3>Your History</h3>"
 
 data.forEach(img=>{
 
-html+=`<br>
+html+=`
+
+<div class="history-card">
+
 <a href="${API}/download?path=${img}" target="_blank">
+
 Download Image
+
 </a>
+
+</div>
+
 `
 
 })
