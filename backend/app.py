@@ -67,21 +67,24 @@ def dehaze_image(path):
 
 @app.route("/signup", methods=["POST"])
 def signup():
-
     data = request.json
-
     email = data["email"]
     password = data["password"]
 
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
-    c.execute("INSERT INTO users(email,password) VALUES (?,?)",(email,password))
+    # Check if user already exists
+    existing = c.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
+    if existing:
+        conn.close()
+        return jsonify({"status":"fail","message":"User already exists"})
 
+    c.execute("INSERT INTO users(email,password) VALUES (?,?)", (email,password))
     conn.commit()
     conn.close()
 
-    return jsonify({"status":"signup success"})
+    return jsonify({"status":"success"})   # <-- MUST be exactly "success"
 
 # ---------------- LOGIN ----------------
 
