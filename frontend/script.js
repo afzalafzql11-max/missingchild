@@ -1,4 +1,4 @@
-const API = ""
+const API = "https://dehazer-sf8p.onrender.com"
 
 let user_id = null
 
