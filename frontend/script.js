@@ -1,4 +1,4 @@
-const API = "https://YOUR_RENDER_BACKEND_URL"
+const API = "https://dehazer-sf8p.onrender.com"
 
 let current_user=""
 
