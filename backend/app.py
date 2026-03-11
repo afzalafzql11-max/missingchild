@@ -1,155 +1,206 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, render_template, request, redirect, session, send_file
 import sqlite3
 import os
 import cv2
+import numpy as np
+import uuid
 
 app = Flask(__name__)
+app.secret_key = "secret"
 
 UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+DEHAZE_FOLDER = "uploads/dehazed"
 
-# DATABASE
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(DEHAZE_FOLDER, exist_ok=True)
+
+# ---------------- DATABASE ----------------
+
 def init_db():
+
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
-    c.execute("""CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT,
-        password TEXT)""")
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT,
+    password TEXT
+    )
+    """)
 
-    c.execute("""CREATE TABLE IF NOT EXISTS history(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        image TEXT)""")
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS history(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    image TEXT
+    )
+    """)
 
     conn.commit()
     conn.close()
 
 init_db()
 
+# ---------------- DEHAZE ----------------
 
-# DEHAZE
 def dehaze_image(path):
 
     img = cv2.imread(path)
 
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    # Resize large images (important for Render)
+    h, w = img.shape[:2]
+    if w > 1200:
+        scale = 1200 / w
+        img = cv2.resize(img,(int(w*scale),int(h*scale)))
+
+    # White balance (preserves color)
+    result = cv2.xphoto.simpleWB(img)
+
+    # LAB enhancement
+    lab = cv2.cvtColor(result, cv2.COLOR_BGR2LAB)
     l,a,b = cv2.split(lab)
 
-    clahe = cv2.createCLAHE(clipLimit=3.0,tileGridSize=(8,8))
-    cl = clahe.apply(l)
+    clahe = cv2.createCLAHE(clipLimit=2.0,tileGridSize=(8,8))
+    l = clahe.apply(l)
 
-    limg = cv2.merge((cl,a,b))
-    final = cv2.cvtColor(limg,cv2.COLOR_LAB2BGR)
+    lab = cv2.merge((l,a,b))
+    result = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
 
-    new_path = path.replace("uploads","uploads/dehazed")
-    os.makedirs("uploads/dehazed",exist_ok=True)
+    # slight sharpen
+    kernel = np.array([[0,-1,0],[-1,5,-1],[0,-1,0]])
+    result = cv2.filter2D(result,-1,kernel)
 
-    cv2.imwrite(new_path,final)
+    filename = str(uuid.uuid4()) + ".jpg"
+    new_path = os.path.join(DEHAZE_FOLDER,filename)
+
+    cv2.imwrite(new_path,result)
 
     return new_path
 
 
-# SIGNUP
-@app.route("/signup", methods=["POST"])
+# ---------------- HOME ----------------
+
+@app.route("/")
+def home():
+    return redirect("/login")
+
+# ---------------- SIGNUP ----------------
+
+@app.route("/signup",methods=["GET","POST"])
 def signup():
 
-    data = request.json
+    if request.method=="POST":
 
-    email = data["email"]
-    password = data["password"]
+        email=request.form["email"]
+        password=request.form["password"]
 
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
+        conn=sqlite3.connect("database.db")
+        c=conn.cursor()
 
-    c.execute("INSERT INTO users(email,password) VALUES (?,?)",(email,password))
-    conn.commit()
+        c.execute("INSERT INTO users(email,password) VALUES (?,?)",(email,password))
 
-    user_id = c.lastrowid
+        conn.commit()
+        conn.close()
 
-    conn.close()
+        return redirect("/login")
 
-    return jsonify({"status":"success","user_id":user_id})
+    return render_template("signup.html")
 
+# ---------------- LOGIN ----------------
 
-# LOGIN
-@app.route("/login", methods=["POST"])
+@app.route("/login",methods=["GET","POST"])
 def login():
 
-    data = request.json
+    if request.method=="POST":
 
-    email = data["email"]
-    password = data["password"]
+        email=request.form["email"]
+        password=request.form["password"]
 
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
+        conn=sqlite3.connect("database.db")
+        c=conn.cursor()
 
-    user = c.execute(
+        user=c.execute(
         "SELECT * FROM users WHERE email=? AND password=?",
         (email,password)
-    ).fetchone()
+        ).fetchone()
 
-    conn.close()
+        conn.close()
 
-    if user:
-        return jsonify({
-            "status":"success",
-            "user_id":user[0]
-        })
+        if user:
+            session["user"]=user[0]
+            return redirect("/dashboard")
 
-    return jsonify({"status":"fail"})
+    return render_template("login.html")
 
+# ---------------- DASHBOARD ----------------
 
-# DEHAZE UPLOAD
-@app.route("/dehaze", methods=["POST"])
-def dehaze():
+@app.route("/dashboard",methods=["GET","POST"])
+def dashboard():
 
-    user_id = request.form["user_id"]
-    file = request.files["image"]
+    if "user" not in session:
+        return redirect("/login")
 
-    path = os.path.join(UPLOAD_FOLDER,file.filename)
-    file.save(path)
+    if request.method=="POST":
 
-    new_path = dehaze_image(path)
+        file=request.files["image"]
 
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
+        filename=str(uuid.uuid4()) + ".jpg"
+        path=os.path.join(UPLOAD_FOLDER,filename)
 
-    c.execute("INSERT INTO history(user_id,image) VALUES (?,?)",(user_id,new_path))
-    conn.commit()
-    conn.close()
+        file.save(path)
 
-    return send_file(new_path, as_attachment=True)
+        new_path=dehaze_image(path)
 
+        conn=sqlite3.connect("database.db")
+        c=conn.cursor()
 
-# HISTORY
-@app.route("/history/<user_id>")
-def history(user_id):
+        c.execute(
+        "INSERT INTO history(user_id,image) VALUES (?,?)",
+        (session["user"],new_path)
+        )
 
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
+        conn.commit()
+        conn.close()
 
-    data = c.execute(
-        "SELECT image FROM history WHERE user_id=?",
-        (user_id,)
+        return send_file(new_path,as_attachment=True)
+
+    return render_template("dashboard.html")
+
+# ---------------- HISTORY ----------------
+
+@app.route("/history")
+def history():
+
+    if "user" not in session:
+        return redirect("/login")
+
+    conn=sqlite3.connect("database.db")
+    c=conn.cursor()
+
+    data=c.execute(
+    "SELECT image FROM history WHERE user_id=?",
+    (session["user"],)
     ).fetchall()
 
     conn.close()
 
-    images = [x[0] for x in data]
+    return render_template("history.html",data=data)
 
-    return jsonify(images)
+# ---------------- DOWNLOAD ----------------
 
+@app.route("/download/<path:img>")
+def download(img):
 
-# DOWNLOAD
-@app.route("/download")
-def download():
+    return send_file(img,as_attachment=True)
 
-    path = request.args.get("path")
+# ---------------- LOGOUT ----------------
 
-    return send_file(path, as_attachment=True)
+@app.route("/logout")
+def logout():
 
+    session.clear()
+    return redirect("/login")
 
 if __name__ == "__main__":
     app.run()
