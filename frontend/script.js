@@ -9,21 +9,17 @@ const email = document.getElementById("signup_email").value
 const password = document.getElementById("signup_password").value
 
 const res = await fetch(API + "/signup",{
-
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
-
 body:JSON.stringify({
 email:email,
 password:password
 })
-
 })
 
 const data = await res.json()
-
 alert(data.status)
 
 }
@@ -36,17 +32,14 @@ const email = document.getElementById("login_email").value
 const password = document.getElementById("login_password").value
 
 const res = await fetch(API + "/login",{
-
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
-
 body:JSON.stringify({
 email:email,
 password:password
 })
-
 })
 
 const data = await res.json()
@@ -73,10 +66,8 @@ async function uploadImage(){
 const file = document.getElementById("image").files[0]
 
 if(!file){
-
 alert("Please select image")
 return
-
 }
 
 const formData = new FormData()
@@ -85,10 +76,8 @@ formData.append("image",file)
 formData.append("user_id",USER_ID)
 
 const res = await fetch(API + "/dehaze_image",{
-
 method:"POST",
 body:formData
-
 })
 
 const blob = await res.blob()
@@ -110,7 +99,7 @@ a.remove()
 
 async function loadHistory(){
 
-const res = await fetch(API + "/history/"+USER_ID)
+const res = await fetch(API + "/history/" + USER_ID)
 
 const images = await res.json()
 
