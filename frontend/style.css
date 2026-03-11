@@ -2,7 +2,7 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:"Segoe UI",sans-serif;
+font-family:"Poppins",sans-serif;
 }
 
 body{
@@ -29,26 +29,26 @@ max-width:900px;
 .title{
 
 text-align:center;
-
-font-size:38px;
-
-margin-bottom:25px;
+font-size:40px;
+margin-bottom:30px;
 
 }
 
 .card{
 
-background:rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.12);
 
-backdrop-filter:blur(15px);
+backdrop-filter:blur(20px);
 
-padding:35px;
+padding:40px;
 
-border-radius:15px;
+border-radius:20px;
 
-box-shadow:0 20px 40px rgba(0,0,0,0.3);
+box-shadow:0 20px 50px rgba(0,0,0,0.4);
 
 text-align:center;
+
+margin-bottom:20px;
 
 }
 
@@ -56,31 +56,35 @@ input{
 
 width:80%;
 
-padding:12px;
+padding:14px;
 
-margin:10px;
+margin:12px;
 
 border:none;
 
-border-radius:8px;
+border-radius:10px;
 
 outline:none;
+
+font-size:15px;
 
 }
 
 button{
 
-padding:12px 25px;
+padding:14px 28px;
 
 border:none;
 
-border-radius:8px;
+border-radius:10px;
 
 background:linear-gradient(45deg,#00c6ff,#0072ff);
 
 color:white;
 
 font-weight:bold;
+
+font-size:15px;
 
 cursor:pointer;
 
@@ -90,37 +94,20 @@ transition:0.3s;
 
 button:hover{
 
-transform:scale(1.05);
+transform:scale(1.07);
 
-box-shadow:0 10px 20px rgba(0,0,0,0.3);
-
-}
-
-.link{
-
-margin-top:15px;
+box-shadow:0 12px 30px rgba(0,0,0,0.4);
 
 }
 
-.link a{
+hr{
 
-color:#00e1ff;
-
-text-decoration:none;
-
-}
-
-#preview{
-
-margin-top:15px;
-
-max-width:350px;
-
-border-radius:10px;
+margin:25px 0;
+border:1px solid rgba(255,255,255,0.3);
 
 }
 
-.buttons{
+#history{
 
 margin-top:20px;
 
@@ -136,6 +123,16 @@ padding:12px;
 
 margin:10px;
 
-border-radius:8px;
+border-radius:10px;
+
+box-shadow:0 5px 10px rgba(0,0,0,0.2);
+
+}
+
+a{
+
+color:#00e1ff;
+text-decoration:none;
+font-weight:bold;
 
 }
