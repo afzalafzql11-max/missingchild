@@ -5,31 +5,24 @@
 
 <title>AI Image Dehazer</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/static/style.css">
 
 </head>
 
 <body>
 
-<div class="container">
-
 <h1>AI Image Dehazer</h1>
-<p>Remove haze and improve clarity instantly</p>
 
 <div id="auth">
-
-<div class="card">
 
 <h2>Signup</h2>
 
 <input id="signup_email" placeholder="Email">
 <input id="signup_pass" type="password" placeholder="Password">
 
-<button onclick="signup()">Create Account</button>
+<button onclick="signup()">Signup</button>
 
-</div>
-
-<div class="card">
+<hr>
 
 <h2>Login</h2>
 
@@ -40,32 +33,24 @@
 
 </div>
 
-</div>
-
-
 <div id="dashboard" style="display:none">
-
-<div class="upload-box">
 
 <h2>Upload Hazy Image</h2>
 
-<input type="file" id="image" onchange="previewImage()">
+<input type="file" id="image">
 
-<img id="preview">
+<button onclick="upload()">Dehaze</button>
 
-<button onclick="upload()">Dehaze Image</button>
+<br><br>
 
-</div>
-
-<button class="history-btn" onclick="loadHistory()">View History</button>
+<button onclick="loadHistory()">View History</button>
 
 <div id="history"></div>
 
 </div>
 
-</div>
-
-<script src="script.js"></script>
+<script src="/static/script.js"></script>
 
 </body>
+
 </html>
