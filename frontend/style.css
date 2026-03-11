@@ -7,9 +7,9 @@ font-family:"Segoe UI",sans-serif;
 
 body{
 
-min-height:100vh;
-
 background:linear-gradient(135deg,#1e3c72,#2a5298);
+
+height:100vh;
 
 display:flex;
 justify-content:center;
@@ -19,71 +19,58 @@ color:white;
 
 }
 
-h1{
-
-font-size:42px;
-margin-bottom:25px;
-text-align:center;
-
-}
-
 .container{
 
-width:95%;
+width:90%;
 max-width:900px;
 
 }
 
-#auth, #dashboard{
-
-background:rgba(255,255,255,0.1);
-backdrop-filter:blur(12px);
-
-padding:40px;
-
-border-radius:16px;
-
-box-shadow:0 15px 40px rgba(0,0,0,0.3);
+.title{
 
 text-align:center;
 
+font-size:38px;
+
+margin-bottom:25px;
+
 }
 
-h2{
+.card{
 
-margin-bottom:15px;
+background:rgba(255,255,255,0.1);
+
+backdrop-filter:blur(15px);
+
+padding:35px;
+
+border-radius:15px;
+
+box-shadow:0 20px 40px rgba(0,0,0,0.3);
+
+text-align:center;
 
 }
 
 input{
 
 width:80%;
+
 padding:12px;
 
 margin:10px;
 
-border-radius:8px;
 border:none;
 
+border-radius:8px;
+
 outline:none;
-
-font-size:15px;
-
-}
-
-input[type=file]{
-
-background:white;
-color:black;
-padding:8px;
 
 }
 
 button{
 
-padding:12px 28px;
-
-margin-top:10px;
+padding:12px 25px;
 
 border:none;
 
@@ -105,28 +92,37 @@ button:hover{
 
 transform:scale(1.05);
 
-box-shadow:0 8px 18px rgba(0,0,0,0.3);
+box-shadow:0 10px 20px rgba(0,0,0,0.3);
 
 }
 
-hr{
+.link{
 
-margin:25px 0;
-border:0;
-height:1px;
-background:rgba(255,255,255,0.3);
+margin-top:15px;
 
 }
 
-#history{
+.link a{
 
-margin-top:25px;
+color:#00e1ff;
 
-display:grid;
+text-decoration:none;
 
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+}
 
-gap:15px;
+#preview{
+
+margin-top:15px;
+
+max-width:350px;
+
+border-radius:10px;
+
+}
+
+.buttons{
+
+margin-top:20px;
 
 }
 
@@ -136,36 +132,10 @@ background:white;
 
 color:black;
 
-padding:15px;
+padding:12px;
 
-border-radius:10px;
+margin:10px;
 
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
-
-}
-
-.history-card a{
-
-text-decoration:none;
-font-weight:bold;
-color:#0072ff;
-
-}
-
-.history-card a:hover{
-
-text-decoration:underline;
-
-}
-
-#preview{
-
-margin-top:20px;
-
-max-width:350px;
-
-border-radius:10px;
-
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
+border-radius:8px;
 
 }
