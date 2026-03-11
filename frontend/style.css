@@ -1,48 +1,51 @@
 body{
 
-background:#0f2b5c;
-color:white;
-font-family:Arial;
+font-family: Arial;
+
 text-align:center;
+
+background:#f2f2f2;
 
 }
 
 h1{
 
-color:#6bb6ff;
+color:#333;
 
 }
 
 input{
 
 padding:10px;
-margin:5px;
-border-radius:6px;
-border:none;
+
+margin:10px;
+
+width:250px;
 
 }
 
 button{
 
-background:#2196f3;
-color:white;
 padding:10px 20px;
+
+background:#4CAF50;
+
+color:white;
+
 border:none;
-border-radius:6px;
+
 cursor:pointer;
 
 }
 
 button:hover{
 
-background:#0d6efd;
+background:#45a049;
 
 }
 
-#result{
+#dashboard{
 
-margin-top:20px;
-width:300px;
-border-radius:10px;
+margin-top:30px;
 
 }
