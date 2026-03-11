@@ -1,119 +1,88 @@
-const API = "https://image1dehazer.onrender.com"
+const API = "https://YOUR_RENDER_BACKEND_URL"
 
-let USER_ID = null
+let current_user=""
 
+function signup(){
 
-async function signup(){
-
-const email = document.getElementById("signup_email").value
-const password = document.getElementById("signup_password").value
-
-const res = await fetch(API + "/signup",{
+fetch(API+"/signup",{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
-email:email,
-password:password
+username:su_user.value,
+password:su_pass.value
 })
+}).then(r=>r.json()).then(d=>{
+alert("Signup success")
 })
-
-const data = await res.json()
-alert(data.status)
 
 }
 
+function login(){
 
-
-async function login(){
-
-const email = document.getElementById("login_email").value
-const password = document.getElementById("login_password").value
-
-const res = await fetch(API + "/login",{
+fetch(API+"/login",{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
-email:email,
-password:password
+username:li_user.value,
+password:li_pass.value
 })
-})
+}).then(r=>r.json()).then(d=>{
 
-const data = await res.json()
+if(d.status=="success"){
 
-if(data.status==="success"){
+current_user=li_user.value
 
-USER_ID = data.user_id
+auth.style.display="none"
+dashboard.style.display="block"
 
-document.getElementById("auth").style.display="none"
-document.getElementById("dashboard").style.display="block"
+load_history()
 
 }else{
 
-alert("Invalid login")
+alert("Login failed")
 
 }
 
-}
-
-
-
-async function uploadImage(){
-
-const file = document.getElementById("image").files[0]
-
-if(!file){
-alert("Please select image")
-return
-}
-
-const formData = new FormData()
-
-formData.append("image",file)
-formData.append("user_id",USER_ID)
-
-const res = await fetch(API + "/dehaze_image",{
-method:"POST",
-body:formData
 })
 
-const blob = await res.blob()
+}
 
-const url = window.URL.createObjectURL(blob)
+function upload(){
 
-const a = document.createElement("a")
+let file=image.files[0]
 
-a.href=url
-a.download="dehazed.jpg"
+let form=new FormData()
+form.append("image",file)
+form.append("username",current_user)
 
-document.body.appendChild(a)
-a.click()
-a.remove()
+fetch(API+"/upload",{method:"POST",body:form})
+.then(r=>r.blob())
+.then(b=>{
+
+result.src=URL.createObjectURL(b)
+
+load_history()
+
+})
 
 }
 
+function load_history(){
 
+fetch(API+"/history/"+current_user)
+.then(r=>r.json())
+.then(data=>{
 
-async function loadHistory(){
+history.innerHTML=""
 
-const res = await fetch(API + "/history/" + USER_ID)
+data.forEach(p=>{
 
-const images = await res.json()
+history.innerHTML+=`<br>
+<a href="${API}/download?path=${p}" target="_blank">
+Download Image
+</a>`
 
-const div = document.getElementById("history")
-
-div.innerHTML=""
-
-images.forEach(img=>{
-
-const image = document.createElement("img")
-
-image.src = API + "/download?path=" + img
-
-div.appendChild(image)
+})
 
 })
 
