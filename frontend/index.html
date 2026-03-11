@@ -2,11 +2,10 @@
 <html>
 
 <head>
-
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
 <title>Image Dehazer</title>
-
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -15,6 +14,9 @@
 
 <div id="auth">
 
+<!-- SIGNUP -->
+<div id="signup_box">
+
 <h2>Signup</h2>
 
 <input id="signup_email" placeholder="Email">
@@ -22,7 +24,16 @@
 
 <button onclick="signup()">Signup</button>
 
-<hr>
+<p>
+Already have account? 
+<a href="#" onclick="showLogin()">Login</a>
+</p>
+
+</div>
+
+
+<!-- LOGIN -->
+<div id="login_box" style="display:none">
 
 <h2>Login</h2>
 
@@ -31,8 +42,17 @@
 
 <button onclick="login()">Login</button>
 
+<p>
+Don't have account?
+<a href="#" onclick="showSignup()">Signup</a>
+</p>
+
 </div>
 
+</div>
+
+
+<!-- DASHBOARD -->
 
 <div id="dashboard" style="display:none">
 
@@ -53,5 +73,4 @@
 <script src="script.js"></script>
 
 </body>
-
 </html>
