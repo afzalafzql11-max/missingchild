@@ -1,76 +1,39 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-<title>Image Dehazer</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Dehazer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<h1>Image Dehazer</h1>
+  <div class="container">
 
-<div id="auth">
+    <!-- SIGNUP -->
+    <div id="signup_box">
+      <h2>Signup</h2>
+      <form action="http://localhost:5000/signup" method="POST">
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <button type="submit">Signup</button>
+      </form>
+      <p>Already have an account? <a href="#login" onclick="showLogin()">Login</a></p>
+    </div>
 
-<!-- SIGNUP -->
-<div id="signup_box">
+    <!-- LOGIN -->
+    <div id="login_box" style="display:none;">
+      <h2>Login</h2>
+      <form action="http://localhost:5000/login" method="POST">
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <button type="submit">Login</button>
+      </form>
+      <p>Don't have an account? <a href="#signup" onclick="showSignup()">Signup</a></p>
+    </div>
 
-<h2>Signup</h2>
+  </div>
 
-<input id="signup_email" placeholder="Email">
-<input id="signup_pass" type="password" placeholder="Password">
-
-<button onclick="signup()">Signup</button>
-
-<p>
-Already have account? 
-<a href="#" onclick="showLogin()">Login</a>
-</p>
-
-</div>
-
-
-<!-- LOGIN -->
-<div id="login_box" style="display:none">
-
-<h2>Login</h2>
-
-<input id="login_email" placeholder="Email">
-<input id="login_pass" type="password" placeholder="Password">
-
-<button onclick="login()">Login</button>
-
-<p>
-Don't have account?
-<a href="#" onclick="showSignup()">Signup</a>
-</p>
-
-</div>
-
-</div>
-
-
-<!-- DASHBOARD -->
-
-<div id="dashboard" style="display:none">
-
-<h2>Upload Hazy Image</h2>
-
-<input type="file" id="image">
-
-<button onclick="upload()">Dehaze</button>
-
-<br><br>
-
-<button onclick="loadHistory()">View History</button>
-
-<div id="history"></div>
-
-</div>
-
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </body>
 </html>
